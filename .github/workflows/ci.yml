@@ -23,7 +23,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v6
         with:
-          images: ${{ vars.DOCKER_USERNAME }}/my-image
+          images: ${{ secrets.DOCKER_USERNAME }}/my-image
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
             type=sha
@@ -40,8 +40,6 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v7
         with:
-          push: ${{ github.event_name != 'pull_request' }}
+          context: .
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
-          annotations: ${{ steps.meta.outputs.annotations }}
-          provenance: true
-          sbom: true
