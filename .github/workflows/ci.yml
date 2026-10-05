@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-test:
+  Code Checkout:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Code Checko
+      - name: Code Checkout
         uses: actions/checkout@v4
 
   build-and-push:
