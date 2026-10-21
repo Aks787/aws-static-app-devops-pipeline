@@ -8,7 +8,6 @@ jobs:
     name: Deploy to aws
     runs-on: ubuntu-latest
     
-    # Add OIDC permissions at the job level
     permissions:
       contents: read
       id-token: write
