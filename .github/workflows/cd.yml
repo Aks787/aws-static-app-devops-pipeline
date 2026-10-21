@@ -1,7 +1,10 @@
  name: cd pipeline
 
- on: 
-   workflow_dispatch:
+ on:
+ 	workflow_dispatch:
 
-jobs:  
+jobs:
+	deploy:	
+ 		name: Deploy to aws
+  	runs-on: ubuntu-latest
   
