@@ -1,1 +1,7 @@
+ name: cd pipeline
 
+ on: 
+   workflow_dispatch:
+
+jobs:  
+  
