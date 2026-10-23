@@ -17,3 +17,8 @@ variable "ssh_cidr" {
   type = string
   default = "103.174.26.110/32"
 }
+
+variable "image_tag" {
+  type    = string
+  default = "latest"
+}
