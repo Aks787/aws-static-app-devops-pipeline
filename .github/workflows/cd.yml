@@ -1,5 +1,4 @@
 name: cd pipeline
-
 on:
   workflow_dispatch:
 
@@ -7,15 +6,18 @@ jobs:
   deploy:
     name: Deploy to aws
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: ./terraform
     
     permissions:
       contents: read
       id-token: write
+      
+    env:
+      TF_VAR_image_tag: ${{ inputs.image_tag }}
 
+    defaults:
+      run:
+        working-directory: ./terraform  
+        
     steps:
       - name: Code checkout
         uses: actions/checkout@v4
@@ -24,7 +26,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
           aws-region: us-east-1
-          role-to-assume: arn:aws-cn:iam::123456789100:role/my-github-actions-role 
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
         
       - name: Setup terraform
         uses: hashicorp/setup-terraform@v4
