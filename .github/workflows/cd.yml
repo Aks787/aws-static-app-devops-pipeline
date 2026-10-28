@@ -1,47 +1,60 @@
 name: cd pipeline
+
 on:
   workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Docker image tag to deploy"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: terraform-deploy
+  cancel-in-progress: false
 
 jobs:
   deploy:
-    name: Deploy to aws
+    name: Deploy to AWS
     runs-on: ubuntu-latest
-    
-    permissions:
-      contents: read
-      id-token: write
-      
+
     env:
       TF_VAR_image_tag: ${{ inputs.image_tag }}
+      TF_IN_AUTOMATION: "true"
 
     defaults:
       run:
-        working-directory: ./terraform  
-        
+        working-directory: ./terraform
+
     steps:
       - name: Code checkout
         uses: actions/checkout@v4
-        
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
           aws-region: us-east-1
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-        
-      - name: Setup terraform
+
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@v4
         with:
-         terraform_version: "1.14.6"
-         
+          terraform_version: "1.14.6"
+
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -input=false
+
+      - name: Terraform Format Check
+        run: terraform fmt -check
 
       - name: Terraform Validate
         run: terraform validate
-      
+
       - name: Terraform Plan
-        run: terraform plan -out=tfplan
-      
+        run: terraform plan -input=false -out=tfplan
+
       - name: Terraform Apply
-        run: terraform apply tfplan
-         
+        run: terraform apply -input=false tfplan
